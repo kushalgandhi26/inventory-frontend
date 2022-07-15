@@ -1,9 +1,11 @@
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 
-const Modal = ({ setopenmodal, update, setupdate }) => {
+const Modal = ({ setopenmodal, update, setupdate, loggedIn }) => {
     const router = useRouter()
-    const [productDetails, setproductDetails] = useState({ title: "", image: "", createduser: "temp" })
+    const [productDetails, setproductDetails] = useState({ title: "", image: "", createduser: loggedIn.user })
+
+    const [show, setshow] = useState(false)
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -12,49 +14,58 @@ const Modal = ({ setopenmodal, update, setupdate }) => {
 
     const getDetails = async () => {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/products/${update.id}`, {
-            method: 'GET'
+            method: 'GET',
+            headers:{
+                'token':loggedIn.jwt
+            }
         })
         const res = response.json().then(result => {
             setproductDetails(result)
         })
-
     }
 
     const handleSubmit = async (e) => {
-        if (update.visible === true) {
-            try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/updateproduct/${update.id}`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(productDetails),
-                    method: 'PUT'
-                })
-                router.reload()
-            } catch (error) {
-                console.error(error)
+        e.preventDefault()
+        if (productDetails.title != "") {
+            if (update.visible === true) {
+                try {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/updateproduct/${update.id}`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'token': loggedIn.jwt
+                        },
+                        body: JSON.stringify(productDetails),
+                        method: 'PUT'
+                    })
+                    setupdate({visible:false})
+                } catch (error) {
+                    console.error(error)
+                }
+            } else {
+                try {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/addproduct`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'token': loggedIn.jwt
+                        },
+                        body: JSON.stringify(productDetails),
+                        method: 'POST'
+                    })
+                } catch (error) {
+                    console.error(error)
+                }
             }
-        } else {
-            try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/addproduct`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(productDetails),
-                    method: 'POST'
-                })
-                router.reload()
-            } catch (error) {
-                console.error(error)
-            }
+            setopenmodal(false)
+            router.push("/")
         }
-        
+        setshow(true)
     }
 
     useEffect(() => {
         if (update.visible === true) {
             getDetails()
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [update])
 
 
@@ -67,16 +78,17 @@ const Modal = ({ setopenmodal, update, setupdate }) => {
                     </button>
                     <div className="px-6 py-6 lg:px-8">
                         <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">Enter Product Details</h3>
-                        <form className="space-y-6" action="#">
+                        <form className="space-y-6">
                             <div>
                                 <label htmlFor="title" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Product Name</label>
-                                <input onChange={(e) => handleChange(e)} type="text" name="title" id="title" value={productDetails.title} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                                <input onChange={(e) => {handleChange(e);setshow(false)}} type="text" name="title" id="title" value={productDetails.title} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                                {show && <span className='text-red-600 text-sm'>* Enter product name</span>}
                             </div>
                             <div>
                                 <label htmlFor="image" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Image URL</label>
-                                <input onChange={(e) => handleChange(e)} type="text" name="image" id="image" value={productDetails.image} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                                <input onChange={(e) => handleChange(e)} type="text" name="image" id="image" value={productDetails.image} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" />
                             </div>
-                            <button onClick={handleSubmit} type="submit" className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">{(update.visible)?"Update Product":"Add Product"}</button>
+                            <button onClick={handleSubmit} type="submit" className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">{(update.visible) ? "Update Product" : "Add Product"}</button>
                         </form>
                     </div>
                 </div>

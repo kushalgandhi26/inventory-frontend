@@ -1,24 +1,46 @@
 import React, { useState } from 'react'
+import { useRouter } from 'next/router'
+import Head from 'next/head';
 
-const Login = () => {
-  const [userDetails, setuserDetails] = useState({username:"",phonenumber:""})
-
+const Login = ({ setloggedIn }) => {
+  const router = useRouter()
+  const [userDetails, setuserDetails] = useState({ username: "", phonenumber: "" })
+  const [show, setshow] = useState(false)
   const handleChange = (e) => {
-    const {name,value} = e.target
-    setuserDetails({...userDetails,[name]:value})
+    const { name, value } = e.target
+    setuserDetails({ ...userDetails, [name]: value })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    try {
-      
-    } catch (error) {
-      console.log(error)
+    if (userDetails.username !== "" && userDetails.phonenumber !== "") {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(userDetails)
+        })
+        const res = response.json().then(result => {
+          localStorage.setItem('user', JSON.stringify(result))
+          setuserDetails({ username: "", phonenumber: "" })
+          setloggedIn(result)
+          router.push("/")
+        })
+      } catch (error) {
+        console.log(error)
+      }
     }
+    setshow(true)
   }
 
   return (
     <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <Head>
+        <title>Login</title>
+        <link rel="icon" href="https://www.starkode.com/assets/Starkode.Business.Inventory.png" />
+      </Head>
       <div className="max-w-md w-full space-y-8">
         <div>
           <div className="mx-auto h-12 w-auto" />
@@ -29,14 +51,14 @@ const Login = () => {
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="username" className="sr-only">Enter Name</label>
-              <input onChange={(e) => {handleChange(e)}} id="username" name="username" type="text" autoComplete="username" className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Enter Name" required/>
+              <input onChange={(e) => { handleChange(e); setshow(false) }} id="username" name="username" type="text" autoComplete="username" className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Enter Name" required />
             </div>
             <div>
               <label htmlFor="phonenumber" className="sr-only">Enter Phonenumber</label>
-              <input onChange={(e) => {handleChange(e)}} id="phonenumber" name="phonenumber" type="tel" maxLength={10} pattern="[0-9]{5}[0-9]{5}" className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Enter Phonenumber" required/>
+              <input onChange={(e) => { handleChange(e); setshow(false) }} id="phonenumber" name="phonenumber" type="tel" maxLength={10} pattern="[0-9]{5}[0-9]{5}" className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Enter Phonenumber" required />
             </div>
           </div>
-
+          {show && <span className='text-red-600 text-sm'>* Enter both the details</span>}
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <div className="h-1 w-4" />
