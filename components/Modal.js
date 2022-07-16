@@ -80,12 +80,12 @@ const Modal = ({ setopenmodal, update, setupdate, loggedIn }) => {
                         <h3 className="mb-4 text-xl font-medium text-white">Enter Product Details</h3>
                         <form className="space-y-6">
                             <div>
-                                <label htmlFor="title" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Product Name</label>
+                                <label htmlFor="title" className="block mb-2 text-sm font-medium text-gray-300">Product Name</label>
                                 <input onChange={(e) => {handleChange(e);setshow(false)}} type="text" name="title" id="title" value={productDetails.title} className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-600 border-gray-500 placeholder-gray-400 text-white" required />
                                 {show && <span className='text-red-600 text-sm'>* Enter product name</span>}
                             </div>
                             <div>
-                                <label htmlFor="image" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Image URL (Copy image address)</label>
+                                <label htmlFor="image" className="block mb-2 text-sm font-medium text-gray-300">Image URL (Copy image address)</label>
                                 <input onChange={(e) => handleChange(e)} type="text" name="image" id="image" value={productDetails.image} className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-600 border-gray-500 placeholder-gray-400 text-white" />
                             </div>
                             <button onClick={handleSubmit} type="submit" className="w-full text-white focus:ring-4 focus:outline-non font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">{(update.visible) ? "Update Product" : "Add Product"}</button>
