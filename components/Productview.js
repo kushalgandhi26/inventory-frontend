@@ -27,13 +27,13 @@ const Productview = ({ product, setupdate, loggedIn }) => {
     }
 
     return (
-        <div className="max-w-xs rounded overflow-hidden shadow-lg mx-1 my-2">
+        <div className="max-w-xs rounded overflow-hidden shadow-lg mx-1 my-2 bg-[#2C394B]">
             <img className="w-80 h-60 p-6" src={(product.image === "") ? "https://media.istockphoto.com/vectors/default-image-icon-vector-missing-picture-page-for-website-design-or-vector-id1357365823?k=20&m=1357365823&s=612x612&w=0&h=ZH0MQpeUoSHM3G2AWzc8KkGYRg4uP_kuu0Za8GFxdFc=" : product.image} alt="image" />
             <div className="px-6 py-2">
-                <div className="font-bold text-xl mb-2">{product.title}</div>
+                <div className="font-bold text-xl mb-2 text-white">{product.title}</div>
             </div>
             <div className="px-6 pt-2 pb-2 flex">
-                <span className='mr-1 font-medium'>Created by</span>
+                <span className='mr-1 font-medium text-white'>Created by</span>
                 <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">{product.createduser}</span>
                 {(loggedIn !== undefined) && <>
                     <span className='mx-2'>

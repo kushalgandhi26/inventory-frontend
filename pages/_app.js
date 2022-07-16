@@ -7,7 +7,7 @@ import NextNProgress from "nextjs-progressbar";
 function MyApp({ Component, pageProps }) {
   const router = useRouter()
   const [loggedIn, setloggedIn] = useState(undefined)
-  
+
   useEffect(() => {
     if (localStorage.getItem('user')) {
       setloggedIn(JSON.parse(localStorage.getItem('user')))

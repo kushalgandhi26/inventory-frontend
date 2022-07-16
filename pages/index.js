@@ -6,15 +6,15 @@ import { useRouter } from "next/router";
 export default function Home({ products, openmodal, setopenmodal, update, setupdate, loggedIn }) {
   const router = useRouter()
   // if(loggedIn !== undefined && router.)
-  
+
   return (
     <>
-      <div className="flex flex-wrap p-4">
-      <Head>
-        <title>Products</title>
-        <link rel="icon" href="https://www.starkode.com/assets/Starkode.Business.Inventory.png" />
-      </Head>
-        {openmodal && <Modal setopenmodal={setopenmodal} update={update} setupdate={setupdate} loggedIn={loggedIn} />}
+      {openmodal && <Modal setopenmodal={setopenmodal} update={update} setupdate={setupdate} loggedIn={loggedIn} />}
+      <div className="flex justify-center p-4 lg:justify-start flex-wrap">
+        <Head>
+          <title>Products</title>
+          <link rel="icon" href="https://www.starkode.com/assets/Starkode.Business.Inventory.png" />
+        </Head>
         {products.map((p) => {
           return (
             <Productview key={p.id} product={p} setupdate={setupdate} loggedIn={loggedIn} />
