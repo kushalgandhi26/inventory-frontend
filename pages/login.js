@@ -7,7 +7,7 @@ const Login = ({ setloggedIn }) => {
   const [userDetails, setuserDetails] = useState({ username: "", phonenumber: "" })
   const [show, setshow] = useState(false)
   const [validpass, setvalidpass] = useState(false)
-  var pass = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/
+  const pass = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/
 
   const handleChange = (e) => {
     const { name, value } = e.target
